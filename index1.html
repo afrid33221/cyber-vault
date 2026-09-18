@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEN OF BUILDERS - CYBER VAULT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef8f0;
+      --panel: #ffffff;
+      --accent: #16a34a;
+      --accent-light: #dff5e4;
+      --accent-dim: #9fd9ae;
+      --text: #10241a;
+      --text-dim: #5b7a68;
+      --danger: #dc2626;
+      --danger-light: #fdeaea;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .vault-card {
+      max-width: 440px;
+      width: 100%;
+      background: var(--panel);
+      border: 1px solid var(--accent-dim);
+      border-radius: 16px;
+      padding: 44px 32px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(22, 163, 74, 0.12);
+    }
+
+    .mascot-icon {
+      animation: floaty 3s ease-in-out infinite;
+      margin-bottom: 12px;
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .brand-tag {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      background: var(--panel);
+      border: 1px solid var(--accent-dim);
+      border-radius: 10px;
+      padding: 8px 14px;
+      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.12);
+      text-align: left;
+      line-height: 1.3;
+      z-index: 10;
+    }
+
+    .brand-tag .brand-club {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .brand-tag .brand-uni {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+    }
+
+    .club-name {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .uni-name {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+
+    .game-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 36px;
+    }
+
+    .start-button {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 16px 32px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .start-button:hover {
+      background: #12873d;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .field-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+
+    .field-group input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--accent-dim);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+
+    .field-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .option-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option-button {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--accent-dim);
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .option-button:hover {
+      border-color: var(--accent);
+    }
+
+    .option-button.correct {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .option-button.incorrect {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .feedback-text {
+      font-size: 13px;
+      margin-bottom: 20px;
+      min-height: 36px;
+      line-height: 1.5;
+    }
+
+    .hud {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--panel);
+      border: 1px solid var(--accent-dim);
+      border-radius: 999px;
+      padding: 10px 20px;
+      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.12);
+      font-size: 13px;
+      z-index: 10;
+    }
+
+    #score-display {
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .progress-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--accent-dim);
+    }
+
+    .dot.active {
+      border-color: var(--accent);
+      animation: pulseDot 1.2s ease-in-out infinite;
+    }
+
+    .dot.done {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4); }
+      50% { box-shadow: 0 0 0 5px rgba(22, 163, 74, 0); }
+    }
+
+    .shake {
+      animation: shakeButton 0.4s;
+    }
+
+    @keyframes shakeButton {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .analyzing {
+      color: var(--text-dim);
+      animation: blinkText 1s ease-in-out infinite;
+    }
+
+    @keyframes blinkText {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .email-preview {
+      text-align: left;
+      background: var(--bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .email-preview .email-line {
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+
+    .email-preview .email-body {
+      color: var(--text);
+      margin-top: 10px;
+    }
+
+    .two-choice {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .two-choice .option-button {
+      flex: 1;
+      text-align: center;
+    }
+
+    .dial-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .dial {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dial-btn {
+      width: 44px;
+      height: 32px;
+      background: var(--bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .dial-btn:hover {
+      border-color: var(--accent);
+    }
+
+    .dial-value {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      width: 48px;
+      text-align: center;
+    }
+
+    .guess-history {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      min-height: 10px;
+    }
+
+    .guess-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .guess-cell {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .guess-cell.green {
+      background: var(--accent);
+    }
+
+    .guess-cell.yellow {
+      background: #eab308;
+    }
+
+    .guess-cell.gray {
+      background: #b9c4bd;
+    }
+
+    .scenario-row {
+      text-align: left;
+      border: 1px solid var(--accent-dim);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .scenario-text {
+      font-size: 13px;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .toggle-pair {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      background: var(--bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 6px;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .toggle-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-light);
+      font-weight: 700;
+    }
+
+    .toggle-btn.correct {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .toggle-btn.incorrect {
+      border-color: var(--danger);
+      background: var(--danger-light);
+    }
+
+    .score-reveal {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .rank-badge {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="brand-tag">
+    <div class="brand-club">DEN OF BUILDERS</div>
+    <div class="brand-uni">TONGMYONG UNIVERSITY IT CLUB</div>
+  </div>
+
+  <div class="hud hidden" id="hud">
+    <span id="score-display">SCORE: 0</span>
+    <div class="progress-dots">
+      <span class="dot" id="dot-1"></span>
+      <span class="dot" id="dot-2"></span>
+      <span class="dot" id="dot-3"></span>
+      <span class="dot" id="dot-4"></span>
+    </div>
+  </div>
+
+  <div class="vault-card" id="landing-screen">
+    <svg class="mascot-icon" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="14" y="28" width="36" height="28" rx="6" fill="#16a34a"/>
+      <path d="M20 28V20a12 12 0 0 1 24 0v8" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="32" cy="42" r="4" fill="#ffffff"/>
+      <rect x="30" y="44" width="4" height="8" rx="2" fill="#ffffff"/>
+    </svg>
+    <p class="club-name">DEN OF BUILDERS 🕵️</p>
+    <p class="uni-name">TONGMYONG UNIVERSITY IT CLUB</p>
+    <h1 class="game-title">CYBER VAULT</h1>
+    <p class="tagline">Can you break into the vault?</p>
+    <button class="start-button" id="start-button">START MISSION</button>
+  </div>
+
+  <div class="vault-card hidden" id="info-screen">
+    <p class="club-name">AGENT REGISTRATION 🪪</p>
+    <p class="uni-name">DEN OF BUILDERS · TONGMYONG UNIVERSITY</p>
+    <h1 class="game-title" style="font-size:28px;">BEFORE YOU BEGIN</h1>
+    <p class="tagline">We only collect this for club registration. No hidden data collection.</p>
+
+    <div class="field-group">
+      <label for="input-name">Name</label>
+      <input type="text" id="input-name" placeholder="Hong Gildong" />
+    </div>
+    <div class="field-group">
+      <label for="input-id">Student ID</label>
+      <input type="text" id="input-id" placeholder="20231234" />
+    </div>
+    <div class="field-group">
+      <label for="input-email">Email</label>
+      <input type="email" id="input-email" placeholder="you@tu.ac.kr" />
+    </div>
+    <div class="field-group">
+      <label for="input-nickname">Nickname (optional)</label>
+      <input type="text" id="input-nickname" placeholder="Agent codename" />
+    </div>
+
+    <button class="start-button" id="continue-button">ENTER THE VAULT</button>
+  </div>
+
+  <div class="vault-card hidden" id="challenge-screen">
+    <p class="club-name">CHALLENGE 1 / 4 🔑</p>
+    <h1 class="game-title" style="font-size:28px;">PASSWORD CRACKER</h1>
+    <p class="tagline" id="q1-prompt">Which of these passwords is actually the hardest to crack?</p>
+
+    <div class="option-list" id="password-options">
+      <!-- Dynamically populated -->
+    </div>
+
+    <p class="feedback-text hidden" id="password-feedback"></p>
+    <button class="start-button hidden" id="challenge1-next-button">NEXT CHALLENGE</button>
+  </div>
+
+  <div class="vault-card hidden" id="challenge2-screen">
+    <p class="club-name">CHALLENGE 2 / 4 📧</p>
+    <h1 class="game-title" style="font-size:28px;">PHISHING DETECTOR</h1>
+    <p class="tagline">Analyze the message below to find out if it's safe.</p>
+
+    <div class="email-preview" id="email-preview-box">
+      <!-- Dynamically populated -->
+    </div>
+
+    <div class="two-choice" id="phishing-options">
+      <button class="option-button" data-correct-val="false">✅ Looks Safe</button>
+      <button class="option-button" data-correct-val="true">🚨 Phishing Attempt</button>
+    </div>
+
+    <p class="feedback-text hidden" id="phishing-feedback"></p>
+    <button class="start-button hidden" id="challenge2-next-button">NEXT CHALLENGE</button>
+  </div>
+
+  <div class="vault-card hidden" id="challenge3-screen">
+    <p class="club-name">CHALLENGE 3 / 4 🧩</p>
+    <h1 class="game-title" style="font-size:28px;">CODE BREAKER</h1>
+    <p class="tagline">Crack the 3-digit vault code. 🟢 right spot · 🟡 right digit, wrong spot · ⚪ not in code.</p>
+
+    <div class="dial-row">
+      <div class="dial">
+        <button class="dial-btn" data-dial="0" data-dir="up">▲</button>
+        <div class="dial-value" id="dial-0">0</div>
+        <button class="dial-btn" data-dial="0" data-dir="down">▼</button>
+      </div>
+      <div class="dial">
+        <button class="dial-btn" data-dial="1" data-dir="up">▲</button>
+        <div class="dial-value" id="dial-1">0</div>
+        <button class="dial-btn" data-dial="1" data-dir="down">▼</button>
+      </div>
+      <div class="dial">
+        <button class="dial-btn" data-dial="2" data-dir="up">▲</button>
+        <div class="dial-value" id="dial-2">0</div>
+        <button class="dial-btn" data-dial="2" data-dir="down">▼</button>
+      </div>
+    </div>
+
+    <button class="start-button" id="try-combination-button">TRY COMBINATION</button>
+
+    <div class="guess-history" id="guess-history"></div>
+
+    <p class="feedback-text hidden" id="code-feedback"></p>
+    <button class="start-button hidden" id="challenge3-next-button">NEXT CHALLENGE</button>
+  </div>
+
+  <div class="vault-card hidden" id="challenge4-screen">
+    <p class="club-name">CHALLENGE 4 / 4 🌐</p>
+    <h1 class="game-title" style="font-size:28px;">NETWORK SECURITY</h1>
+    <p class="tagline">Flag each scenario, then lock in your answers.</p>
+
+    <div id="scenarios-container">
+      <!-- Dynamically populated -->
+    </div>
+
+    <button class="start-button" id="lock-in-button">LOCK IN ANSWERS</button>
+    <p class="feedback-text hidden" id="network-feedback"></p>
+    <button class="start-button hidden" id="challenge4-next-button">SEE YOUR RESULTS</button>
+  </div>
+
+  <div class="vault-card hidden" id="final-screen">
+    <p class="club-name">🔓 VAULT UNLOCKED!</p>
+    <p class="uni-name">DEN OF BUILDERS · TONGMYONG UNIVERSITY</p>
+    <div class="score-reveal" id="final-score">0/100</div>
+    <div class="rank-badge" id="final-rank">ROOKIE BUILDER</div>
+    <p class="tagline" id="final-message">You made it through the vault.</p>
+    <a class="start-button" id="join-button" href="#" style="display:block; text-decoration:none; text-align:center;">JOIN DEN OF BUILDERS</a>
+  </div>
+
+  <script>
+    function pickRandom(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // --- QUESTION POOLS FOR DYNAMIC VARIATION ---
+    const passwordPools = [
+      {
+        prompt: "Which of these passwords is actually the hardest to crack?",
+        options: [
+          { text: "P@ssw0rd!", correct: false },
+          { text: "Qw3rty#1", correct: false },
+          { text: "correcthorsebatterystaple", correct: true },
+          { text: "1234$ecure", correct: false }
+        ]
+      },
+      {
+        prompt: "Among these options, which password offers the best resistance against brute-force attacks?",
+        options: [
+          { text: "Tr0ub4dor&3", correct: false },
+          { text: "blue-pencil-coffee-window-house", correct: true },
+          { text: "Admin123!", correct: false },
+          { text: "P!33$tock", correct: false }
+        ]
+      },
+      {
+        prompt: "Select the most secure password option based on modern length over complexity guidelines:",
+        options: [
+          { text: "S0m3thinGh@rd!", correct: false },
+          { text: "correct-battery-staple-correct", correct: true },
+          { text: "Pa$$w0rd99#", correct: false },
+          { text: "Abc123xyz!", correct: false }
+        ]
+      }
+    ];
+
+    const phishingPools = [
+      {
+        from: "support@paypa1-security.com",
+        subject: "Urgent: Your account will be suspended!",
+        body: "Dear User, we noticed unusual activity on your account. Verify your identity within 24 hours or it will be permanently locked: verify-account-now.com",
+        isPhishing: true
+      },
+      {
+        from: "security@apple-id-support-alert.net",
+        subject: "Action Required: Locked iCloud Account",
+        body: "Your Apple ID has been locked due to multiple incorrect sign-in attempts. Click here to confirm your credentials immediately: apple-support-verify-id.com",
+        isPhishing: true
+      },
+      {
+        from: "no-reply@github.com",
+        subject: "Security Alert: New personal access token added",
+        body: "Hi there! A new personal access token was added to your GitHub account from IP address 192.168.1.50. If this was you, no further action is needed.",
+        isPhishing: false
+      },
+      {
+        from: "billing@netflix.com",
+        subject: "Your monthly subscription receipt",
+        body: "Thanks for being a subscriber! Your payment of 14,900 KRW has been successfully processed for your billing cycle. View your billing details in your app.",
+        isPhishing: false
+      }
+    ];
+
+    const secretCodePools = [
+      [3, 1, 4],
+      [7, 2, 9],
+      [5, 8, 0],
+      [4, 6, 2]
+    ];
+
+    const scenarioPools = [
+      [
+        { text: "1. You're at a cafe. A WiFi network called 'Free_Coffee_WiFi' has no password. You use it to log into your bank app.", answer: "risky", points: 8 },
+        { text: "2. Before accessing internal club servers from home, you connect through the club's official VPN.", answer: "safe", points: 8 },
+        { text: "3. At the airport, 'Airport_Free_WiFi_2' connects instantly with no login page or password at all.", answer: "risky", points: 9 }
+      ],
+      [
+        { text: "1. You receive an unexpected text message containing a shortened tracking link for a package you never ordered.", answer: "risky", points: 8 },
+        { text: "2. You enable two-factor authentication (2FA) using an authenticator app rather than SMS codes.", answer: "safe", points: 8 },
+        { text: "3. You download a helpful script from an unverified public forum and run it immediately with root/administrator privileges.", answer: "risky", points: 9 }
+      ],
+      [
+        { text: "1. You use a password manager to generate unique, complex passwords for every separate web service you use.", answer: "safe", points: 8 },
+        { text: "2. A coworker asks for your temporary temporary verification token over corporate chat to troubleshoot an urgent bug.", answer: "risky", points: 8 },
+        { text: "3. You regularly update your operating system and software packages to patch known security vulnerabilities.", answer: "safe", points: 9 }
+      ]
+    ];
+
+    // --- GAME STATE VARIABLES ---
+    let activePasswordQ = null;
+    let activePhishingQ = null;
+    let secretCode = [3, 1, 4];
+    let dialValues = [0, 0, 0];
+    let attemptsLeft = 5;
+    let activeScenarios = [];
+    const scenarioSelections = [null, null, null];
+
+    const landingScreen = document.getElementById("landing-screen");
+    const infoScreen = document.getElementById("info-screen");
+    const startButton = document.getElementById("start-button");
+
+    function goToInfoScreen() {
+      landingScreen.classList.add("hidden");
+      infoScreen.classList.remove("hidden");
+    }
+
+    startButton.addEventListener("click", goToInfoScreen);
+
+    const continueButton = document.getElementById("continue-button");
+    const challengeScreen = document.getElementById("challenge-screen");
+
+    const playerData = {
+      name: "",
+      studentId: "",
+      email: "",
+      nickname: "",
+      score: 0
+    };
+
+    function initGameContent() {
+      // Pick random questions for this session
+      activePasswordQ = pickRandom(passwordPools);
+      activePhishingQ = pickRandom(phishingPools);
+      secretCode = pickRandom(secretCodePools);
+      activeScenarios = pickRandom(scenarioPools);
+
+      // Setup Challenge 1 UI
+      document.getElementById("q1-prompt").textContent = activePasswordQ.prompt;
+      const pwdOptsContainer = document.getElementById("password-options");
+      pwdOptsContainer.innerHTML = "";
+      const shuffledPwdOpts = shuffleArray(activePasswordQ.options);
+      shuffledPwdOpts.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "option-button";
+        btn.dataset.correct = opt.correct;
+        btn.textContent = opt.text;
+        btn.addEventListener("click", handlePasswordAnswer);
+        pwdOptsContainer.appendChild(btn);
+      });
+
+      // Setup Challenge 2 UI
+      const emailBox = document.getElementById("email-preview-box");
+      emailBox.innerHTML = `
+        <p class="email-line">From: ${activePhishingQ.from}</p>
+        <p class="email-line">Subject: ${activePhishingQ.subject}</p>
+        <p class="email-body">${activePhishingQ.body}</p>
+      `;
+      document.querySelectorAll("#phishing-options .option-button").forEach(btn => {
+        const val = btn.dataset.correctVal === "true";
+        btn.dataset.correct = (val === activePhishingQ.isPhishing);
+      });
+
+      // Setup Challenge 4 UI
+      const scenarioContainer = document.getElementById("scenarios-container");
+      scenarioContainer.innerHTML = "";
+      activeScenarios.forEach((scen, idx) => {
+        scenarioSelections[idx] = null;
+        const row = document.createElement("div");
+        row.className = "scenario-row";
+        row.innerHTML = `
+          <p class="scenario-text">${scen.text}</p>
+          <div class="toggle-pair" data-scenario="${idx}">
+            <button class="toggle-btn" data-choice="safe">SAFE</button>
+            <button class="toggle-btn" data-choice="risky">RISKY</button>
+          </div>
+        `;
+        scenarioContainer.appendChild(row);
+      });
+
+      // Re-bind scenario toggle listeners
+      document.querySelectorAll(".toggle-pair").forEach(function (pair) {
+        const scenarioIndex = parseInt(pair.dataset.scenario, 10);
+        pair.querySelectorAll(".toggle-btn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            pair.querySelectorAll(".toggle-btn").forEach(function (b) {
+              b.classList.remove("selected");
+            });
+            btn.classList.add("selected");
+            scenarioSelections[scenarioIndex] = btn.dataset.choice;
+          });
+        });
+      });
+    }
+
+    function goToChallengeScreen() {
+      const nameValue = document.getElementById("input-name").value.trim();
+      const idValue = document.getElementById("input-id").value.trim();
+      const emailValue = document.getElementById("input-email").value.trim();
+      const nicknameValue = document.getElementById("input-nickname").value.trim();
+
+      if (nameValue === "" || idValue === "" || emailValue === "") {
+        alert("Please fill in your name, student ID, and email before continuing.");
+        return;
+      }
+
+      playerData.name = nameValue;
+      playerData.studentId = idValue;
+      playerData.email = emailValue;
+      playerData.nickname = nicknameValue;
+
+      initGameContent();
+
+      infoScreen.classList.add("hidden");
+      challengeScreen.classList.remove("hidden");
+
+      document.getElementById("hud").classList.remove("hidden");
+      document.getElementById("dot-1").classList.add("active");
+    }
+
+    continueButton.addEventListener("click", goToChallengeScreen);
+
+    const scoreDisplay = document.getElementById("score-display");
+
+    function updateScoreDisplay() {
+      scoreDisplay.textContent = "SCORE: " + playerData.score;
+    }
+
+    const passwordFeedback = document.getElementById("password-feedback");
+    const challenge1NextButton = document.getElementById("challenge1-next-button");
+    const challenge2Screen = document.getElementById("challenge2-screen");
+
+    const passwordCorrectLines = [
+      "Correct! It looks plain, but its length beats short 'complex-looking' passwords every time.",
+      "Nice catch — attackers crack short symbol passwords fast, but long phrases resist brute force.",
+      "Exactly right. Length beats complexity tricks almost every time in password security."
+    ];
+
+    const passwordWrongLines = [
+      "Not quite. Short passwords with @ and # feel strong but crack fast.",
+      "Close, but no — symbol substitutions like '@' for 'a' are the first thing cracking tools try.",
+      "Actually the weaker pick. A long plain phrase resists brute-force better than a short 'complex' one."
+    ];
+
+    function handlePasswordAnswer(event) {
+      const clickedButton = event.target;
+      const wasCorrect = clickedButton.dataset.correct === "true";
+      const passwordOptions = document.querySelectorAll("#password-options .option-button");
+
+      passwordOptions.forEach(function (button) {
+        button.disabled = true;
+      });
+
+      if (!wasCorrect) {
+        clickedButton.classList.add("shake");
+      }
+
+      passwordFeedback.classList.remove("hidden");
+      passwordFeedback.classList.add("analyzing");
+      passwordFeedback.textContent = "🔄 ANALYZING PASSWORD STRENGTH...";
+
+      setTimeout(function () {
+        passwordOptions.forEach(function (button) {
+          if (button.dataset.correct === "true") {
+            button.classList.add("correct");
+          } else if (button === clickedButton) {
+            button.classList.add("incorrect");
+          }
+        });
+
+        passwordFeedback.classList.remove("analyzing");
+
+        if (wasCorrect) {
+          playerData.score += 25;
+          passwordFeedback.textContent = pickRandom(passwordCorrectLines);
+        } else {
+          passwordFeedback.textContent = pickRandom(passwordWrongLines);
+        }
+
+        updateScoreDisplay();
+        challenge1NextButton.classList.remove("hidden");
+      }, 900);
+    }
+
+    function goToChallenge2() {
+      challengeScreen.classList.add("hidden");
+      challenge2Screen.classList.remove("hidden");
+
+      document.getElementById("dot-1").classList.remove("active");
+      document.getElementById("dot-1").classList.add("done");
+      document.getElementById("dot-2").classList.add("active");
+    }
+
+    challenge1NextButton.addEventListener("click", goToChallenge2);
+
+    const phishingFeedback = document.getElementById("phishing-feedback");
+    const challenge2NextButton = document.getElementById("challenge2-next-button");
+    const challenge3Screen = document.getElementById("challenge3-screen");
+
+    const phishingCorrectLines = [
+      "Correct! Red flags include urgent scare language and suspicious sender/links.",
+      "Right call. Fake urgency plus spoofed details are classic phishing signs.",
+      "Nailed it. Real companies never threaten instant account lockout by email without proper verification domains."
+    ];
+
+    const phishingWrongLines = [
+      "Actually a phishing attempt. Look closely at the domain and the scare tactics.",
+      "This one's fake. Urgency plus a suspicious source is a textbook phishing combo.",
+      "Careful — always double-check the sender address and indicators before trusting a message."
+    ];
+
+    function handlePhishingAnswer(event) {
+      const clickedButton = event.target;
+      const wasCorrect = clickedButton.dataset.correct === "true";
+      const phishingOptions = document.querySelectorAll("#phishing-options .option-button");
+
+      phishingOptions.forEach(function (button) {
+        button.disabled = true;
+      });
+
+      if (!wasCorrect) {
+        clickedButton.classList.add("shake");
+      }
+
+      phishingFeedback.classList.remove("hidden");
+      phishingFeedback.classList.add("analyzing");
+      phishingFeedback.textContent = "🔄 SCANNING SENDER AND LINKS...";
+
+      setTimeout(function () {
+        phishingOptions.forEach(function (button) {
+          if (button.dataset.correct === "true") {
+            button.classList.add("correct");
+          } else if (button === clickedButton) {
+            button.classList.add("incorrect");
+          }
+        });
+
+        phishingFeedback.classList.remove("analyzing");
+
+        if (wasCorrect) {
+          playerData.score += 25;
+          phishingFeedback.textContent = pickRandom(phishingCorrectLines);
+        } else {
+          phishingFeedback.textContent = pickRandom(phishingWrongLines);
+        }
+
+        updateScoreDisplay();
+        challenge2NextButton.classList.remove("hidden");
+      }, 900);
+    }
+
+    document.querySelectorAll("#phishing-options .option-button").forEach(function (button) {
+      button.addEventListener("click", handlePhishingAnswer);
+    });
+
+    function goToChallenge3() {
+      challenge2Screen.classList.add("hidden");
+      challenge3Screen.classList.remove("hidden");
+
+      document.getElementById("dot-2").classList.remove("active");
+      document.getElementById("dot-2").classList.add("done");
+      document.getElementById("dot-3").classList.add("active");
+    }
+
+    challenge2NextButton.addEventListener("click", goToChallenge3);
+
+    function updateDialDisplay(index) {
+      document.getElementById("dial-" + index).textContent = dialValues[index];
+    }
+
+    document.querySelectorAll(".dial-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const index = parseInt(btn.dataset.dial, 10);
+        const direction = btn.dataset.dir;
+
+        if (direction === "up") {
+          dialValues[index] = (dialValues[index] + 1) % 10;
+        } else {
+          dialValues[index] = (dialValues[index] + 9) % 10;
+        }
+
+        updateDialDisplay(index);
+      });
+    });
+
+    function evaluateGuess() {
+      const codeCopy = secretCode.slice();
+      const guessCopy = dialValues.slice();
+      const colors = ["gray", "gray", "gray"];
+
+      for (let i = 0; i < 3; i++) {
+        if (guessCopy[i] === codeCopy[i]) {
+          colors[i] = "green";
+          codeCopy[i] = null;
+          guessCopy[i] = null;
+        }
+      }
+
+      for (let i = 0; i < 3; i++) {
+        if (guessCopy[i] !== null) {
+          const foundIndex = codeCopy.indexOf(guessCopy[i]);
+          if (foundIndex !== -1) {
+            colors[i] = "yellow";
+            codeCopy[foundIndex] = null;
+          }
+        }
+      }
+
+      return colors;
+    }
+
+    const guessHistory = document.getElementById("guess-history");
+
+    function renderGuessRow(guess, colors) {
+      const row = document.createElement("div");
+      row.className = "guess-row";
+
+      guess.forEach(function (digit, i) {
+        const cell = document.createElement("span");
+        cell.className = "guess-cell " + colors[i];
+        cell.textContent = digit;
+        row.appendChild(cell);
+      });
+
+      guessHistory.appendChild(row);
+    }
+
+    const tryCombinationButton = document.getElementById("try-combination-button");
+    const codeFeedback = document.getElementById("code-feedback");
+    const challenge3NextButton = document.getElementById("challenge3-next-button");
+
+    const codeAttemptLines = [
+      "attempts left. Use the colors as clues.",
+      "tries remaining. Getting warmer?",
+      "attempts left. Green means you're close."
+    ];
+
+    function lockDialControls() {
+      document.querySelectorAll(".dial-btn").forEach(function (btn) {
+        btn.disabled = true;
+      });
+      tryCombinationButton.disabled = true;
+    }
+
+    function handleTryCombination() {
+      attemptsLeft -= 1;
+      const colors = evaluateGuess();
+      renderGuessRow(dialValues.slice(), colors);
+
+      const isCorrect = colors.every(function (c) { return c === "green"; });
+      codeFeedback.classList.remove("hidden");
+
+      if (isCorrect) {
+        lockDialControls();
+        playerData.score += 25;
+        codeFeedback.textContent = "🔓 VAULT CRACKED! Combination correct.";
+        updateScoreDisplay();
+        challenge3NextButton.classList.remove("hidden");
+      } else if (attemptsLeft <= 0) {
+        lockDialControls();
+        codeFeedback.textContent = "Out of attempts. The code was " + secretCode.join("-") + ".";
+        updateScoreDisplay();
+        challenge3NextButton.classList.remove("hidden");
+      } else {
+        codeFeedback.textContent = attemptsLeft + " " + pickRandom(codeAttemptLines);
+      }
+    }
+
+    tryCombinationButton.addEventListener("click", handleTryCombination);
+
+    const challenge4Screen = document.getElementById("challenge4-screen");
+
+    function goToChallenge4() {
+      challenge3Screen.classList.add("hidden");
+      challenge4Screen.classList.remove("hidden");
+
+      document.getElementById("dot-3").classList.remove("active");
+      document.getElementById("dot-3").classList.add("done");
+      document.getElementById("dot-4").classList.add("active");
+    }
+
+    challenge3NextButton.addEventListener("click", goToChallenge4);
+
+    const lockInButton = document.getElementById("lock-in-button");
+    const networkFeedback = document.getElementById("network-feedback");
+    const challenge4NextButton = document.getElementById("challenge4-next-button");
+
+    function handleLockIn() {
+      if (scenarioSelections.includes(null)) {
+        alert("Flag all three scenarios as SAFE or RISKY before locking in.");
+        return;
+      }
+
+      let earnedPoints = 0;
+
+      document.querySelectorAll(".toggle-pair").forEach(function (pair) {
+        const scenarioIndex = parseInt(pair.dataset.scenario, 10);
+        const correctChoice = activeScenarios[scenarioIndex].answer;
+        const playerChoice = scenarioSelections[scenarioIndex];
+        const maxScenarioPoints = activeScenarios[scenarioIndex].points;
+
+        pair.querySelectorAll(".toggle-btn").forEach(function (btn) {
+          btn.disabled = true;
+          if (btn.dataset.choice === correctChoice) {
+            btn.classList.add("correct");
+          } else if (btn.dataset.choice === playerChoice) {
+            btn.classList.add("incorrect");
+          }
+        });
+
+        if (playerChoice === correctChoice) {
+          earnedPoints += maxScenarioPoints;
+        }
+      });
+
+      playerData.score += earnedPoints;
+      updateScoreDisplay();
+
+      lockInButton.disabled = true;
+      networkFeedback.classList.remove("hidden");
+      networkFeedback.textContent = "You correctly flagged scenarios based on secure network best practices.";
+      challenge4NextButton.classList.remove("hidden");
+    }
+
+    lockInButton.addEventListener("click", handleLockIn);
+
+    const finalScreen = document.getElementById("final-screen");
+    const finalScoreEl = document.getElementById("final-score");
+    const finalRankEl = document.getElementById("final-rank");
+    const finalMessageEl = document.getElementById("final-message");
+    const joinButton = document.getElementById("join-button");
+
+    function goToFinalScreen() {
+      challenge4Screen.classList.add("hidden");
+      finalScreen.classList.remove("hidden");
+      document.getElementById("hud").classList.add("hidden");
+
+      document.getElementById("dot-4").classList.remove("active");
+      document.getElementById("dot-4").classList.add("done");
+
+      const finalScore = playerData.score;
+      finalScoreEl.textContent = finalScore + "/100";
+
+      if (finalScore <= 30) {
+        finalRankEl.textContent = "ROOKIE BUILDER";
+        finalMessageEl.textContent = "You made it through the vault. There's a lot more to learn — that's exactly what the club is for.";
+      } else if (finalScore <= 70) {
+        finalRankEl.textContent = "CODE EXPLORER";
+        finalMessageEl.textContent = "Solid instincts. You caught more tricks than most people would.";
+      } else {
+        finalRankEl.textContent = "DEN OF BUILDERS MATERIAL";
+        finalMessageEl.textContent = "Impressive. You clearly think like a builder already.";
+      }
+
+      joinButton.href = "https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK";
+    }
+
+    challenge4NextButton.addEventListener("click", goToFinalScreen);
+  </script>
+
+</body>
+</html>
