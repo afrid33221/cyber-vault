@@ -132,6 +132,25 @@
       background: #12873d;
     }
 
+    .ghost-button {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      background: var(--panel);
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      border-radius: 10px;
+      padding: 13px 20px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .ghost-button:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
     .hidden {
       display: none;
     }
@@ -427,6 +446,8 @@
       background: var(--danger-light);
     }
 
+    .registration-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;max-height:52vh;overflow-y:auto;padding-right:3px;margin-bottom:14px}.registration-grid .full-width{grid-column:1/-1}.field-group textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:58px;border:1px solid var(--accent-dim);border-radius:7px;padding:10px;background:#fff;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none}.game4-status{display:flex;justify-content:space-between;gap:10px;margin:12px 0 10px;padding:9px 12px;border:1px solid var(--accent-dim);border-radius:8px;background:var(--accent-light);font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700}.game4-wrap{width:100%;overflow:hidden;border:2px solid var(--accent-dim);border-radius:10px;background:#08130d;box-sizing:border-box}#cyber-canvas{display:block;width:100%;height:auto;image-rendering:pixelated;touch-action:none}.game4-controls{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:9px;font-size:10px;color:var(--text-dim);text-align:left}.key-hint kbd{display:inline-flex;min-width:18px;height:18px;align-items:center;justify-content:center;border:1px solid #a9b8af;border-bottom-width:2px;border-radius:4px;background:#fff;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text)}.mobile-pad{display:none;margin-top:10px;text-align:center}.mobile-pad button{width:42px;height:36px;margin:2px;border:1px solid var(--accent-dim);border-radius:7px;background:var(--accent-light);color:var(--accent);font-weight:700;touch-action:none}@media(max-width:640px){.registration-grid{grid-template-columns:1fr}.registration-grid .full-width{grid-column:auto}.game4-controls{flex-direction:column;align-items:flex-start}.mobile-pad{display:block}.game4-status{font-size:10px}}
+
     .score-reveal {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 56px;
@@ -445,6 +466,28 @@
       font-weight: 700;
       letter-spacing: 0.05em;
       margin-bottom: 24px;
+    }
+
+    .form-note {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+
+    .summary-box {
+      text-align: left;
+      background: var(--bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 11px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 180px;
+      overflow-y: auto;
     }
   </style>
 </head>
@@ -479,40 +522,12 @@
     <button class="start-button" id="start-button">START MISSION</button>
   </div>
 
-  <div class="vault-card hidden" id="info-screen">
-    <p class="club-name">AGENT REGISTRATION 🪪</p>
-    <p class="uni-name">DEN OF BUILDERS · TONGMYONG UNIVERSITY</p>
-    <h1 class="game-title" style="font-size:28px;">BEFORE YOU BEGIN</h1>
-    <p class="tagline">We only collect this for club registration. No hidden data collection.</p>
-
-    <div class="field-group">
-      <label for="input-name">Name</label>
-      <input type="text" id="input-name" placeholder="Hong Gildong" />
-    </div>
-    <div class="field-group">
-      <label for="input-id">Student ID</label>
-      <input type="text" id="input-id" placeholder="20231234" />
-    </div>
-    <div class="field-group">
-      <label for="input-email">Email</label>
-      <input type="email" id="input-email" placeholder="you@tu.ac.kr" />
-    </div>
-    <div class="field-group">
-      <label for="input-nickname">Nickname (optional)</label>
-      <input type="text" id="input-nickname" placeholder="Agent codename" />
-    </div>
-
-    <button class="start-button" id="continue-button">ENTER THE VAULT</button>
-  </div>
-
   <div class="vault-card hidden" id="challenge-screen">
     <p class="club-name">CHALLENGE 1 / 4 🔑</p>
     <h1 class="game-title" style="font-size:28px;">PASSWORD CRACKER</h1>
     <p class="tagline" id="q1-prompt">Which of these passwords is actually the hardest to crack?</p>
 
-    <div class="option-list" id="password-options">
-      <!-- Dynamically populated -->
-    </div>
+    <div class="option-list" id="password-options"></div>
 
     <p class="feedback-text hidden" id="password-feedback"></p>
     <button class="start-button hidden" id="challenge1-next-button">NEXT CHALLENGE</button>
@@ -523,9 +538,7 @@
     <h1 class="game-title" style="font-size:28px;">PHISHING DETECTOR</h1>
     <p class="tagline">Analyze the message below to find out if it's safe.</p>
 
-    <div class="email-preview" id="email-preview-box">
-      <!-- Dynamically populated -->
-    </div>
+    <div class="email-preview" id="email-preview-box"></div>
 
     <div class="two-choice" id="phishing-options">
       <button class="option-button" data-correct-val="false">✅ Looks Safe</button>
@@ -569,16 +582,15 @@
 
   <div class="vault-card hidden" id="challenge4-screen">
     <p class="club-name">CHALLENGE 4 / 4 🌐</p>
-    <h1 class="game-title" style="font-size:28px;">NETWORK SECURITY</h1>
-    <p class="tagline">Flag each scenario, then lock in your answers.</p>
-
-    <div id="scenarios-container">
-      <!-- Dynamically populated -->
-    </div>
-
-    <button class="start-button" id="lock-in-button">LOCK IN ANSWERS</button>
+    <h1 class="game-title" style="font-size:28px;">CYBER RUN</h1>
+    <p class="tagline">Collect all 3 encryption keys, avoid malware, then reach the SERVER.</p>
+    <div class="game4-status"><span id="game4-timer">TIME: 45</span><span id="game4-keys">KEYS: 0/3</span><span id="game4-hp">HP: ♥♥♥</span></div>
+    <div class="game4-wrap"><canvas id="cyber-canvas" width="760" height="420" aria-label="Cyber Run 2D game"></canvas></div>
+    <div class="game4-controls"><div class="key-hint"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / <kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> MOVE</div><div>🟩 KEY = collect &nbsp;|&nbsp; 🟥 MALWARE = damage &nbsp;|&nbsp; 🟨 FIREWALL = blocked</div></div>
+    <div class="mobile-pad"><button data-move="up">▲</button><div><button data-move="left">◀</button><button data-move="down">▼</button><button data-move="right">▶</button></div></div>
     <p class="feedback-text hidden" id="network-feedback"></p>
     <button class="start-button hidden" id="challenge4-next-button">SEE YOUR RESULTS</button>
+    <button class="ghost-button hidden" id="challenge4-retry-button">RETRY MISSION</button>
   </div>
 
   <div class="vault-card hidden" id="final-screen">
@@ -587,7 +599,9 @@
     <div class="score-reveal" id="final-score">0/100</div>
     <div class="rank-badge" id="final-rank">ROOKIE BUILDER</div>
     <p class="tagline" id="final-message">You made it through the vault.</p>
-    <a class="start-button" id="join-button" href="#" style="display:block; text-decoration:none; text-align:center;">JOIN DEN OF BUILDERS</a>
+    <a class="start-button" id="join-button" href="#" target="_blank" rel="noopener" style="display:block; text-decoration:none; text-align:center;">JOIN DEN OF BUILDERS 🚀</a>
+    <button class="ghost-button" id="replay-button">PLAY AGAIN</button>
+    <p class="form-note" id="form-note">Opens our registration form in a new tab — takes about a minute.</p>
   </div>
 
   <script>
@@ -603,6 +617,16 @@
       }
       return arr;
     }
+
+    /* ============================================================
+       GOOGLE FORM LINK
+       ============================================================
+       Players fill the form themselves after finishing the game.
+       To swap in a different form: open your form → "Send" → the
+       link (🔗) tab → Copy, and paste it between the quotes below.
+       Use the public link, NOT the .../edit one.
+       ============================================================ */
+    const FORM_URL = "https://docs.google.com/forms/d/1FJTHx-mkfdiJhKk3zroedqW_WGWVvxn8yPjinN_fRNo/viewform";
 
     // --- QUESTION POOLS FOR DYNAMIC VARIATION ---
     const passwordPools = [
@@ -669,146 +693,44 @@
       [4, 6, 2]
     ];
 
-    const scenarioPools = [
-      [
-        { text: "1. You're at a cafe. A WiFi network called 'Free_Coffee_WiFi' has no password. You use it to log into your bank app.", answer: "risky", points: 8 },
-        { text: "2. Before accessing internal club servers from home, you connect through the club's official VPN.", answer: "safe", points: 8 },
-        { text: "3. At the airport, 'Airport_Free_WiFi_2' connects instantly with no login page or password at all.", answer: "risky", points: 9 }
-      ],
-      [
-        { text: "1. You receive an unexpected text message containing a shortened tracking link for a package you never ordered.", answer: "risky", points: 8 },
-        { text: "2. You enable two-factor authentication (2FA) using an authenticator app rather than SMS codes.", answer: "safe", points: 8 },
-        { text: "3. You download a helpful script from an unverified public forum and run it immediately with root/administrator privileges.", answer: "risky", points: 9 }
-      ],
-      [
-        { text: "1. You use a password manager to generate unique, complex passwords for every separate web service you use.", answer: "safe", points: 8 },
-        { text: "2. A coworker asks for your temporary temporary verification token over corporate chat to troubleshoot an urgent bug.", answer: "risky", points: 8 },
-        { text: "3. You regularly update your operating system and software packages to patch known security vulnerabilities.", answer: "safe", points: 9 }
-      ]
-    ];
-
     // --- GAME STATE VARIABLES ---
     let activePasswordQ = null;
     let activePhishingQ = null;
     let secretCode = [3, 1, 4];
     let dialValues = [0, 0, 0];
     let attemptsLeft = 5;
-    let activeScenarios = [];
-    const scenarioSelections = [null, null, null];
+    const cyberGame={running:false,ended:false,won:false,startTime:0,timeLimit:45,timeLeft:45,keysCollected:0,hp:3,lastHit:0,animationId:null,keys:new Set(),touch:{up:false,down:false,left:false,right:false},player:{x:48,y:48,r:10,speed:3},exit:{x:704,y:366,w:34,h:34},keyItems:[],malware:[],walls:[],map:{width:760,height:420}};
 
     const landingScreen = document.getElementById("landing-screen");
-    const infoScreen = document.getElementById("info-screen");
     const startButton = document.getElementById("start-button");
-
-    function goToInfoScreen() {
-      landingScreen.classList.add("hidden");
-      infoScreen.classList.remove("hidden");
-    }
-
-    startButton.addEventListener("click", goToInfoScreen);
-
-    const continueButton = document.getElementById("continue-button");
     const challengeScreen = document.getElementById("challenge-screen");
 
-    const playerData = {
-      name: "",
-      studentId: "",
-      email: "",
-      nickname: "",
-      score: 0
-    };
+    const playerData = { score: 0, rank: "" };
 
-    function initGameContent() {
-      // Pick random questions for this session
-      activePasswordQ = pickRandom(passwordPools);
-      activePhishingQ = pickRandom(phishingPools);
-      secretCode = pickRandom(secretCodePools);
-      activeScenarios = pickRandom(scenarioPools);
-
-      // Setup Challenge 1 UI
-      document.getElementById("q1-prompt").textContent = activePasswordQ.prompt;
-      const pwdOptsContainer = document.getElementById("password-options");
-      pwdOptsContainer.innerHTML = "";
-      const shuffledPwdOpts = shuffleArray(activePasswordQ.options);
-      shuffledPwdOpts.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.className = "option-button";
-        btn.dataset.correct = opt.correct;
-        btn.textContent = opt.text;
-        btn.addEventListener("click", handlePasswordAnswer);
-        pwdOptsContainer.appendChild(btn);
-      });
-
-      // Setup Challenge 2 UI
-      const emailBox = document.getElementById("email-preview-box");
-      emailBox.innerHTML = `
-        <p class="email-line">From: ${activePhishingQ.from}</p>
-        <p class="email-line">Subject: ${activePhishingQ.subject}</p>
-        <p class="email-body">${activePhishingQ.body}</p>
-      `;
-      document.querySelectorAll("#phishing-options .option-button").forEach(btn => {
-        const val = btn.dataset.correctVal === "true";
-        btn.dataset.correct = (val === activePhishingQ.isPhishing);
-      });
-
-      // Setup Challenge 4 UI
-      const scenarioContainer = document.getElementById("scenarios-container");
-      scenarioContainer.innerHTML = "";
-      activeScenarios.forEach((scen, idx) => {
-        scenarioSelections[idx] = null;
-        const row = document.createElement("div");
-        row.className = "scenario-row";
-        row.innerHTML = `
-          <p class="scenario-text">${scen.text}</p>
-          <div class="toggle-pair" data-scenario="${idx}">
-            <button class="toggle-btn" data-choice="safe">SAFE</button>
-            <button class="toggle-btn" data-choice="risky">RISKY</button>
-          </div>
-        `;
-        scenarioContainer.appendChild(row);
-      });
-
-      // Re-bind scenario toggle listeners
-      document.querySelectorAll(".toggle-pair").forEach(function (pair) {
-        const scenarioIndex = parseInt(pair.dataset.scenario, 10);
-        pair.querySelectorAll(".toggle-btn").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            pair.querySelectorAll(".toggle-btn").forEach(function (b) {
-              b.classList.remove("selected");
-            });
-            btn.classList.add("selected");
-            scenarioSelections[scenarioIndex] = btn.dataset.choice;
-          });
-        });
-      });
+    function initGameContent(){
+      activePasswordQ=pickRandom(passwordPools); activePhishingQ=pickRandom(phishingPools); secretCode=pickRandom(secretCodePools).slice(); dialValues=[0,0,0]; attemptsLeft=5;
+      document.getElementById("q1-prompt").textContent=activePasswordQ.prompt; const c=document.getElementById("password-options"); c.innerHTML="";
+      shuffleArray(activePasswordQ.options).forEach(function(o){const b=document.createElement("button");b.className="option-button";b.textContent=o.text;b.dataset.correct=o.correct;b.addEventListener("click",handlePasswordAnswer);c.appendChild(b);});
+      document.getElementById("email-preview-box").innerHTML='<div class="email-line"><strong>FROM:</strong> '+activePhishingQ.from+'</div><div class="email-line"><strong>SUBJECT:</strong> '+activePhishingQ.subject+'</div><div class="email-body">'+activePhishingQ.body+'</div>';
+      document.querySelectorAll("#phishing-options .option-button").forEach(function(b){b.disabled=false;b.classList.remove("correct","incorrect","shake");b.dataset.correct=((b.dataset.correctVal==="true")===activePhishingQ.isPhishing);});
+      document.querySelectorAll(".dial-btn").forEach(function(b){b.disabled=false;}); tryCombinationButton.disabled=false; document.querySelectorAll(".dial-value").forEach(function(el,i){el.textContent=dialValues[i];}); document.getElementById("guess-history").innerHTML="";
+      document.getElementById("code-feedback").classList.add("hidden");document.getElementById("challenge3-next-button").classList.add("hidden");document.getElementById("password-feedback").classList.add("hidden");document.getElementById("challenge1-next-button").classList.add("hidden");document.getElementById("phishing-feedback").classList.add("hidden");document.getElementById("challenge2-next-button").classList.add("hidden"); resetCyberRun();
     }
 
-    function goToChallengeScreen() {
-      const nameValue = document.getElementById("input-name").value.trim();
-      const idValue = document.getElementById("input-id").value.trim();
-      const emailValue = document.getElementById("input-email").value.trim();
-      const nicknameValue = document.getElementById("input-nickname").value.trim();
-
-      if (nameValue === "" || idValue === "" || emailValue === "") {
-        alert("Please fill in your name, student ID, and email before continuing.");
-        return;
-      }
-
-      playerData.name = nameValue;
-      playerData.studentId = idValue;
-      playerData.email = emailValue;
-      playerData.nickname = nicknameValue;
-
+    function startMission() {
+      playerData.score = 0;
+      document.querySelectorAll(".progress-dots .dot").forEach(function (dot) {
+        dot.classList.remove("active", "done");
+      });
       initGameContent();
-
-      infoScreen.classList.add("hidden");
+      landingScreen.classList.add("hidden");
       challengeScreen.classList.remove("hidden");
-
       document.getElementById("hud").classList.remove("hidden");
       document.getElementById("dot-1").classList.add("active");
+      updateScoreDisplay();
     }
 
-    continueButton.addEventListener("click", goToChallengeScreen);
+    startButton.addEventListener("click", startMission);
 
     const scoreDisplay = document.getElementById("score-display");
 
@@ -894,8 +816,8 @@
     ];
 
     const phishingWrongLines = [
-      "Actually a phishing attempt. Look closely at the domain and the scare tactics.",
-      "This one's fake. Urgency plus a suspicious source is a textbook phishing combo.",
+      "Not quite — check the sender domain and the pressure tactics again.",
+      "Missed this one. Urgency plus a suspicious source is a textbook phishing combo.",
       "Careful — always double-check the sender address and indicators before trusting a message."
     ];
 
@@ -1058,73 +980,55 @@
 
     tryCombinationButton.addEventListener("click", handleTryCombination);
 
-    const challenge4Screen = document.getElementById("challenge4-screen");
+    const challenge4Screen=document.getElementById("challenge4-screen");
+    const canvas=document.getElementById("cyber-canvas"),ctx=canvas.getContext("2d");
+    const timerEl=document.getElementById("game4-timer"),keysEl=document.getElementById("game4-keys"),hpEl=document.getElementById("game4-hp"),networkFeedback=document.getElementById("network-feedback"),challenge4NextButton=document.getElementById("challenge4-next-button"),challenge4RetryButton=document.getElementById("challenge4-retry-button");
 
-    function goToChallenge4() {
-      challenge3Screen.classList.add("hidden");
-      challenge4Screen.classList.remove("hidden");
-
-      document.getElementById("dot-3").classList.remove("active");
-      document.getElementById("dot-3").classList.add("done");
-      document.getElementById("dot-4").classList.add("active");
+    function resetCyberRun(){
+      if(cyberGame.animationId) cancelAnimationFrame(cyberGame.animationId);
+      cyberGame.running=false;cyberGame.ended=false;cyberGame.won=false;cyberGame.timeLeft=45;cyberGame.keysCollected=0;cyberGame.hp=3;cyberGame.lastHit=0;cyberGame.keys.clear();
+      cyberGame.touch={up:false,down:false,left:false,right:false};
+      cyberGame.player={x:48,y:48,r:10,speed:3};
+      cyberGame.keyItems=[{x:120,y:330,collected:false},{x:380,y:70,collected:false},{x:625,y:305,collected:false}];
+      cyberGame.malware=[{x:220,y:110,r:12,vx:1.35,vy:0.95},{x:520,y:180,r:12,vx:-1.1,vy:1.2},{x:350,y:330,r:12,vx:1.15,vy:-1.05}];
+      cyberGame.walls=[
+        {x:105,y:45,w:24,h:215},{x:105,y:310,w:190,h:24},{x:210,y:45,w:185,h:24},{x:330,y:95,w:24,h:175},{x:430,y:45,w:24,h:145},{x:430,y:235,w:24,h:140},{x:520,y:95,w:135,h:24},{x:600,y:95,w:24,h:150},{x:500,y:350,w:150,h:24},{x:690,y:215,w:24,h:105}
+      ];
+      updateCyberHUD();drawCyberRun();
     }
 
-    challenge3NextButton.addEventListener("click", goToChallenge4);
+    function updateCyberHUD(){timerEl.textContent="TIME: "+Math.max(0,Math.ceil(cyberGame.timeLeft));keysEl.textContent="KEYS: "+cyberGame.keysCollected+"/3";hpEl.textContent="HP: "+"♥".repeat(cyberGame.hp)+"♡".repeat(3-cyberGame.hp);}
+    function rectCircleCollide(r,c){const nx=Math.max(r.x,Math.min(c.x,r.x+r.w)),ny=Math.max(r.y,Math.min(c.y,r.y+r.h));const dx=c.x-nx,dy=c.y-ny;return dx*dx+dy*dy<c.r*c.r;}
+    function canMove(nx,ny){const p={x:nx,y:ny,r:cyberGame.player.r};if(nx<14||ny<14||nx>746||ny>406)return false;return !cyberGame.walls.some(w=>rectCircleCollide(w,p));}
+    function movePlayer(dt){let dx=0,dy=0;if(cyberGame.keys.has("w")||cyberGame.keys.has("arrowup")||cyberGame.touch.up)dy-=1;if(cyberGame.keys.has("s")||cyberGame.keys.has("arrowdown")||cyberGame.touch.down)dy+=1;if(cyberGame.keys.has("a")||cyberGame.keys.has("arrowleft")||cyberGame.touch.left)dx-=1;if(cyberGame.keys.has("d")||cyberGame.keys.has("arrowright")||cyberGame.touch.right)dx+=1;if(dx||dy){const len=Math.hypot(dx,dy);dx/=len;dy/=len;const speed=cyberGame.player.speed*dt; if(canMove(cyberGame.player.x+dx*speed,cyberGame.player.y))cyberGame.player.x+=dx*speed;if(canMove(cyberGame.player.x,cyberGame.player.y+dy*speed))cyberGame.player.y+=dy*speed;}}
+    function updateMalware(dt){cyberGame.malware.forEach(m=>{m.x+=m.vx*dt;m.y+=m.vy*dt;if(m.x<m.r+15||m.x>745-m.r)m.vx*=-1;if(m.y<m.r+15||m.y>405-m.r)m.vy*=-1;cyberGame.walls.forEach(w=>{if(rectCircleCollide(w,{x:m.x,y:m.y,r:m.r})){m.vx*=-1;m.vy*=-1;m.x+=m.vx*2;m.y+=m.vy*2;}});});}
+    function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+    function checkInteractions(now){cyberGame.keyItems.forEach(k=>{if(!k.collected&&distance(cyberGame.player,k)<20){k.collected=true;cyberGame.keysCollected++;updateCyberHUD();}});cyberGame.malware.forEach(m=>{if(distance(cyberGame.player,m)<cyberGame.player.r+m.r&&now-cyberGame.lastHit>900){cyberGame.hp--;cyberGame.lastHit=now;cyberGame.player.x=48;cyberGame.player.y=48;updateCyberHUD();if(cyberGame.hp<=0)endCyberRun(false,"SYSTEM FAILURE — Malware breached your agent.");}});if(cyberGame.keysCollected===3&&cyberGame.player.x>cyberGame.exit.x-8&&cyberGame.player.x<cyberGame.exit.x+cyberGame.exit.w+8&&cyberGame.player.y>cyberGame.exit.y-8&&cyberGame.player.y<cyberGame.exit.y+cyberGame.exit.h+8)endCyberRun(true,"VAULT ACCESS GRANTED — All encryption keys secured.");}
+    function endCyberRun(won,msg){if(cyberGame.ended)return;cyberGame.ended=true;cyberGame.running=false;cyberGame.won=won;if(won){playerData.score+=25;networkFeedback.textContent="✓ "+msg+" +25 POINTS";challenge4RetryButton.classList.add("hidden");}else{networkFeedback.textContent="✕ "+msg;challenge4RetryButton.classList.remove("hidden");}networkFeedback.classList.remove("hidden");challenge4NextButton.classList.remove("hidden");updateScoreDisplay();if(cyberGame.animationId)cancelAnimationFrame(cyberGame.animationId);updateCyberHUD();drawCyberRun();}
+    function startCyberRun(){resetCyberRun();cyberGame.running=true;cyberGame.startTime=performance.now();cyberGame.lastFrame=cyberGame.startTime;networkFeedback.classList.add("hidden");challenge4NextButton.classList.add("hidden");challenge4RetryButton.classList.add("hidden");cyberGame.animationId=requestAnimationFrame(loopCyberRun);}
+    function loopCyberRun(now){if(!cyberGame.running)return;const dt=Math.min(2,(now-(cyberGame.lastFrame||now))/16.67);cyberGame.lastFrame=now;cyberGame.timeLeft=cyberGame.timeLimit-(now-cyberGame.startTime)/1000;if(cyberGame.timeLeft<=0){cyberGame.timeLeft=0;endCyberRun(false,"TIME EXPIRED — The vault locked itself.");return;}movePlayer(dt);updateMalware(dt);checkInteractions(now);updateCyberHUD();drawCyberRun();if(cyberGame.running)cyberGame.animationId=requestAnimationFrame(loopCyberRun);}
+    function drawCyberRun(){const w=canvas.width,h=canvas.height;ctx.clearRect(0,0,w,h);ctx.fillStyle="#07130d";ctx.fillRect(0,0,w,h);ctx.strokeStyle="#123b24";ctx.lineWidth=1;for(let x=0;x<w;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}for(let y=0;y<h;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}cyberGame.walls.forEach(r=>{ctx.fillStyle="#a78b18";ctx.globalAlpha=.35;ctx.fillRect(r.x,r.y,r.w,r.h);ctx.globalAlpha=1;ctx.strokeStyle="#facc15";ctx.strokeRect(r.x,r.y,r.w,r.h);});cyberGame.keyItems.forEach(k=>{if(k.collected)return;ctx.save();ctx.translate(k.x,k.y);ctx.rotate(Math.PI/4);ctx.fillStyle="#22c55e";ctx.fillRect(-8,-8,16,16);ctx.restore();ctx.fillStyle="#86efac";ctx.font="10px monospace";ctx.fillText("KEY",k.x-11,k.y+22);});cyberGame.malware.forEach(m=>{ctx.beginPath();ctx.arc(m.x,m.y,m.r,0,Math.PI*2);ctx.fillStyle="#ef4444";ctx.fill();ctx.strokeStyle="#fecaca";ctx.stroke();ctx.fillStyle="#fff";ctx.font="10px monospace";ctx.textAlign="center";ctx.fillText("!",m.x,m.y+4);ctx.textAlign="left";});ctx.fillStyle=cyberGame.keysCollected===3?"#22c55e":"#475569";ctx.fillRect(cyberGame.exit.x,cyberGame.exit.y,cyberGame.exit.w,cyberGame.exit.h);ctx.fillStyle="#fff";ctx.font="bold 9px monospace";ctx.fillText("SERVER",cyberGame.exit.x-2,cyberGame.exit.y+47);ctx.beginPath();ctx.arc(cyberGame.player.x,cyberGame.player.y,cyberGame.player.r,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.strokeStyle="#22c55e";ctx.lineWidth=3;ctx.stroke();ctx.fillStyle="#22c55e";ctx.font="bold 9px monospace";ctx.fillText("YOU",cyberGame.player.x-10,cyberGame.player.y-16);if(cyberGame.ended){ctx.fillStyle="rgba(0,0,0,.72)";ctx.fillRect(0,0,w,h);ctx.fillStyle=cyberGame.won?"#4ade80":"#f87171";ctx.textAlign="center";ctx.font="bold 28px sans-serif";ctx.fillText(cyberGame.won?"ACCESS GRANTED":"MISSION FAILED",w/2,h/2-8);ctx.fillStyle="#fff";ctx.font="14px monospace";ctx.fillText(cyberGame.won?"Press SEE YOUR RESULTS":"Press RETRY MISSION",w/2,h/2+22);ctx.textAlign="left";}}
 
-    const lockInButton = document.getElementById("lock-in-button");
-    const networkFeedback = document.getElementById("network-feedback");
-    const challenge4NextButton = document.getElementById("challenge4-next-button");
+    function goToChallenge4(){challenge3Screen.classList.add("hidden");challenge4Screen.classList.remove("hidden");document.getElementById("dot-3").classList.remove("active");document.getElementById("dot-3").classList.add("done");document.getElementById("dot-4").classList.add("active");startCyberRun();}
+    challenge3NextButton.addEventListener("click",goToChallenge4);
+    challenge4RetryButton.addEventListener("click",startCyberRun);
 
-    function handleLockIn() {
-      if (scenarioSelections.includes(null)) {
-        alert("Flag all three scenarios as SAFE or RISKY before locking in.");
-        return;
-      }
+    window.addEventListener("keydown",function(e){const k=e.key.toLowerCase();if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(k)){if(cyberGame.running)e.preventDefault();cyberGame.keys.add(k);}});
+    window.addEventListener("keyup",function(e){cyberGame.keys.delete(e.key.toLowerCase());});
+    document.querySelectorAll(".mobile-pad button").forEach(function(btn){const dir=btn.dataset.move;const on=ev=>{ev.preventDefault();cyberGame.touch[dir]=true;};const off=ev=>{ev.preventDefault();cyberGame.touch[dir]=false;};btn.addEventListener("pointerdown",on);btn.addEventListener("pointerup",off);btn.addEventListener("pointercancel",off);btn.addEventListener("pointerleave",off);});
 
-      let earnedPoints = 0;
-
-      document.querySelectorAll(".toggle-pair").forEach(function (pair) {
-        const scenarioIndex = parseInt(pair.dataset.scenario, 10);
-        const correctChoice = activeScenarios[scenarioIndex].answer;
-        const playerChoice = scenarioSelections[scenarioIndex];
-        const maxScenarioPoints = activeScenarios[scenarioIndex].points;
-
-        pair.querySelectorAll(".toggle-btn").forEach(function (btn) {
-          btn.disabled = true;
-          if (btn.dataset.choice === correctChoice) {
-            btn.classList.add("correct");
-          } else if (btn.dataset.choice === playerChoice) {
-            btn.classList.add("incorrect");
-          }
-        });
-
-        if (playerChoice === correctChoice) {
-          earnedPoints += maxScenarioPoints;
-        }
-      });
-
-      playerData.score += earnedPoints;
-      updateScoreDisplay();
-
-      lockInButton.disabled = true;
-      networkFeedback.classList.remove("hidden");
-      networkFeedback.textContent = "You correctly flagged scenarios based on secure network best practices.";
-      challenge4NextButton.classList.remove("hidden");
-    }
-
-    lockInButton.addEventListener("click", handleLockIn);
-
+    // --- FINAL SCREEN ---
     const finalScreen = document.getElementById("final-screen");
     const finalScoreEl = document.getElementById("final-score");
     const finalRankEl = document.getElementById("final-rank");
     const finalMessageEl = document.getElementById("final-message");
     const joinButton = document.getElementById("join-button");
+    const replayButton = document.getElementById("replay-button");
 
     function goToFinalScreen() {
       challenge4Screen.classList.add("hidden");
       finalScreen.classList.remove("hidden");
       document.getElementById("hud").classList.add("hidden");
-
       document.getElementById("dot-4").classList.remove("active");
       document.getElementById("dot-4").classList.add("done");
 
@@ -1132,20 +1036,26 @@
       finalScoreEl.textContent = finalScore + "/100";
 
       if (finalScore <= 30) {
-        finalRankEl.textContent = "ROOKIE BUILDER";
+        playerData.rank = "ROOKIE BUILDER";
         finalMessageEl.textContent = "You made it through the vault. There's a lot more to learn — that's exactly what the club is for.";
       } else if (finalScore <= 70) {
-        finalRankEl.textContent = "CODE EXPLORER";
+        playerData.rank = "CODE EXPLORER";
         finalMessageEl.textContent = "Solid instincts. You caught more tricks than most people would.";
       } else {
-        finalRankEl.textContent = "DEN OF BUILDERS MATERIAL";
+        playerData.rank = "DEN OF BUILDERS MATERIAL";
         finalMessageEl.textContent = "Impressive. You clearly think like a builder already.";
       }
+      finalRankEl.textContent = playerData.rank;
 
-      joinButton.href = "https://forms.gle/REPLACE_WITH_YOUR_FORM_LINK";
+      joinButton.href = FORM_URL;
     }
 
     challenge4NextButton.addEventListener("click", goToFinalScreen);
+
+    replayButton.addEventListener("click", function () {
+      finalScreen.classList.add("hidden");
+      landingScreen.classList.remove("hidden");
+    });
   </script>
 
 </body>
